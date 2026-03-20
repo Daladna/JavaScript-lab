@@ -1,2 +1,2 @@
-![alt text](.images/first_f.png)
+![alt text](./images/first_f.png)
 
