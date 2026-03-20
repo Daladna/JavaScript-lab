@@ -1,5 +1,5 @@
 arr = [1,2,3,4,5,6,7,8,9,10]
-//Фунция 1 - выводит элементы массива и их индексы в виде "Element 0: value 1", "Element 1: value 2" и т.д.
+//Фунция 1
 function printArray(arr) {
     for (let i = 0; i < arr.length; i++){
         console.log("Element " + i + ": " + "value " + arr[i]);
@@ -8,7 +8,7 @@ function printArray(arr) {
 
 // printArray(arr)
 
-//Фунция 2 - выводит элементы массива и их индексы в виде "0: 1", "1: 2" и т.д.
+//Фунция 2
 function printArray1(arr) {
     for (let i = 0; i < arr.length; i++){
         console.log(i + ": "  + arr[i]);
@@ -17,18 +17,18 @@ function printArray1(arr) {
 // printArray1()
 
 
-//Фунция 3 - выводит элементы массива и их индексы в виде "Index: 0, Value: 1", "Index: 1, Value: 2" и т.д.
+//Фунция 3
 function forEach(arr,callback) {
       for (let i = 0; i < arr.length; i++){
         callback(arr[i], i, arr);
       }
 }
 // forEach(arr, (element, index) => {
-//     console.log(index + ": " + element);
-// });
+//      console.log(index + ": " + element);
+//  });
 
 
-//Фунция 4 - принимает массив и функцию обратного вызова, которая применяется к каждому элементу массива, и возвращает новый массив с результатами применения функции обратного вызова к каждому элементу.
+//Фунция 4
 function map(array,callback){
     const result = []
     for (let i = 0; i < array.length; i++){
@@ -37,16 +37,16 @@ function map(array,callback){
     return result;
 
 }
-/*
-const numbers = [1, 2, 3];
-const squared = map(numbers,(element) => element * element);
-console.log(squared);*/
+
+// const numbers = [1, 2, 3];
+// const squared = map(numbers,(element) => element * element);
+// console.log(squared);
 
 
 
 
 
-//Фунция 5 - принимает массив и функцию обратного вызова, которая применяется к каждому элементу массива, и возвращает новый массив, содержащий только те элементы, для которых функция обратного вызова возвращает true.
+//Фунция 5
 function filter(array, callback) {
     const result = [];
     for (let i = 0; i < array.length; i++) {
@@ -64,7 +64,7 @@ function filter(array, callback) {
 
 
 
-//Фунция 6 - принимает массив и функцию обратного вызова, которая применяется к каждому элементу массива, и возвращает первый элемент, для которого функция обратного вызова возвращает true.
+//Фунция 6
 function find(array, callback) {
     for (let i = 0; i < array.length; i++) {
         if (callback(array[i], i, array)) {
@@ -81,7 +81,7 @@ function find(array, callback) {
 
 
 
-//Фунция 7 - принимает массив и функцию обратного вызова, которая применяется к каждому элементу массива, и возвращает true, если функция обратного вызова возвращает true для хотя бы одного элемента массива, и false в противном случае.
+//Фунция 7
 function some(array, callback) {
     for (let i = 0; i < array.length; i++) {
         if (callback(array[i], i, array)) {
@@ -99,7 +99,7 @@ function some(array, callback) {
 
 
 
-//Фунция 8 - принимает массив и функцию обратного вызова, которая применяется к каждому элементу массива, и возвращает true, если функция обратного вызова возвращает true для всех элементов массива, и false в противном случае.
+//Фунция 8
 function every(array, callback) {
     for (let i = 0; i < array.length; i++) {
         if (!callback(array[i], i, array)) {
@@ -115,7 +115,7 @@ function every(array, callback) {
 
 
 
-//функция 9 - принимает массив и функцию обратного вызова, которая применяется к каждому элементу массива, и возвращает единственное значение, которое является результатом последовательного применения функции обратного вызова к каждому элементу массива, начиная с начального значения.
+//функция 9
 function reduce(array, callback, initialValue) {
     let accumulator = initialValue;
     for (let i = 0; i < array.length; i++) {
