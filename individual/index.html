@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CS:GO Case Opener</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo">CS:GO Cases</div>
+    <div class="balance-block">
+      <span class="balance-label">БАЛАНС</span>
+      <span class="balance-val" id="balance-display">$500.00</span>
+    </div>
+  </header>
+
+  <nav>
+    <div class="tab active" data-tab="cases">Кейсы</div>
+    <div class="tab" data-tab="inventory">Инвентарь</div>
+  </nav>
+
+  <div id="page-cases" class="page active">
+    <p class="page-heading">Выбери <span>кейс</span></p>
+    <div class="cases-grid" id="cases-grid"></div>
+    <div class="contents-section">
+      <p class="contents-title" id="contents-label">Содержимое кейса</p>
+      <div class="contents-grid" id="contents-grid"></div>
+    </div>
+  </div>
+
+  <div id="page-inventory" class="page">
+    <div class="inv-header">
+      <p class="page-heading" style="margin-bottom:0">Инвентарь <span id="inv-count">(0)</span></p>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <span class="inv-total" id="inv-worth">Стоимость: $0.00</span>
+        <button class="inv-sell-all" id="sell-all-btn">Продать всё</button>
+      </div>
+    </div>
+    <div class="inv-grid" id="inv-grid"></div>
+    <p class="empty-msg" id="inv-empty">Инвентарь пуст. Открой кейс!</p>
+  </div>
+
+  <div id="roulette-overlay">
+    <div class="roulette-box">
+      <div class="roulette-title" id="roulette-title">Открытие кейса</div>
+      <div class="roulette-track-wrap">
+        <div id="roulette-track"></div>
+      </div>
+      <div id="result-panel">
+        <div class="result-skin-icon" id="res-icon"></div>
+        <div class="result-name" id="res-name"></div>
+        <div class="result-rarity-label" id="res-rarity"></div>
+        <div class="result-price" id="res-price"></div>
+        <div class="result-actions">
+          <button class="btn-keep" id="btn-keep">🎒 Оставить</button>
+          <button class="btn-sell" id="btn-sell">💵 Продать</button>
+          <button class="btn-reopen" id="btn-reopen">🔄 Открыть еще</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
