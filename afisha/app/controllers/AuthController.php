@@ -1,6 +1,14 @@
 <?php
+/**
+ * Контроллер аутентификации: регистрация, вход, выход и восстановление пароля.
+ */
 class AuthController
 {
+    /**
+     * Обрабатывает регистрацию: проверяет данные, создаёт пользователя и авторизует его.
+     *
+     * @return void При успешной регистрации скрипт завершается через redirect.
+     */
     public function register()
     {
         if (Auth::user()) {
@@ -23,6 +31,11 @@ class AuthController
         render('auth/register', ['title' => 'Регистрация', 'errors' => $errors, 'old' => $old]);
     }
 
+    /**
+     * Обрабатывает вход по email и паролю и показывает форму при ошибке.
+     *
+     * @return void При успешном входе скрипт завершается через redirect.
+     */
     public function login()
     {
         if (Auth::user()) {
@@ -47,6 +60,11 @@ class AuthController
         render('auth/login', ['title' => 'Вход', 'errors' => $errors, 'email' => $email]);
     }
 
+    /**
+     * Завершает сеанс по POST-запросу и перенаправляет на главную страницу.
+     *
+     * @return void Скрипт завершается через redirect.
+     */
     public function logout()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -58,6 +76,11 @@ class AuthController
     }
 
     // Шаг 1 восстановления: пользователь вводит email, ему «отправляется» ссылка
+    /**
+     * Первый шаг восстановления пароля: проверяет email и отправляет ссылку со сбросом.
+     *
+     * @return void
+     */
     public function forgot()
     {
         $errors = [];
@@ -93,6 +116,11 @@ class AuthController
     }
 
     // Шаг 2: пользователь переходит по ссылке и задаёт новый пароль
+    /**
+     * Второй шаг восстановления: по токену из ссылки позволяет задать новый пароль.
+     *
+     * @return void При успешной смене пароля скрипт завершается через redirect.
+     */
     public function reset()
     {
         $token = str_in($_GET, 'token');
@@ -114,6 +142,13 @@ class AuthController
     }
 
     // Письмо пишется в лог-файл и отправляется через mail() (если на сервере настроена почта)
+    /**
+     * Отправляет письмо со ссылкой восстановления и дублирует его в лог-файл.
+     *
+     * @param string $to Email получателя.
+     * @param string $link Ссылка для сброса пароля.
+     * @return void
+     */
     private function sendMail($to, $link)
     {
         $body = "Здравствуйте!\nДля сброса пароля перейдите по ссылке:\n$link\nСсылка действительна 1 час.";

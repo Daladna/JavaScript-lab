@@ -1,6 +1,15 @@
 <?php
+/**
+ * Модель пользователя: выборка, создание, удаление, смена пароля и валидация данных.
+ */
 class User
 {
+    /**
+     * Находит пользователя по идентификатору.
+     *
+     * @param int $id Идентификатор пользователя.
+     * @return array|null Данные пользователя или null, если он не найден.
+     */
     public static function findById($id)
     {
         $s = Database::get()->prepare('SELECT * FROM users WHERE id = ?');
@@ -8,6 +17,12 @@ class User
         return $s->fetch() ?: null;
     }
 
+    /**
+     * Находит пользователя по email без учёта регистра.
+     *
+     * @param string $email Email пользователя.
+     * @return array|null Данные пользователя или null, если он не найден.
+     */
     public static function findByEmail($email)
     {
         $s = Database::get()->prepare('SELECT * FROM users WHERE email = ?');
@@ -15,6 +30,12 @@ class User
         return $s->fetch() ?: null;
     }
 
+    /**
+     * Находит пользователя по имени без учёта регистра.
+     *
+     * @param string $username Имя пользователя.
+     * @return array|null Данные пользователя или null, если он не найден.
+     */
     public static function findByUsername($username)
     {
         $s = Database::get()->prepare('SELECT * FROM users WHERE username = ? COLLATE NOCASE');
@@ -22,16 +43,35 @@ class User
         return $s->fetch() ?: null;
     }
 
+    /**
+     * Возвращает список всех пользователей без хешей паролей.
+     *
+     * @return array[] Список пользователей {id, username, email, role, created_at}.
+     */
     public static function all()
     {
         return Database::get()->query('SELECT id, username, email, role, created_at FROM users ORDER BY id')->fetchAll();
     }
 
+    /**
+     * Считает общее количество пользователей.
+     *
+     * @return int Число пользователей в базе.
+     */
     public static function count()
     {
         return (int)Database::get()->query('SELECT COUNT(*) FROM users')->fetchColumn();
     }
 
+    /**
+     * Создаёт пользователя с хешированным паролем.
+     *
+     * @param string $username Имя пользователя.
+     * @param string $email Email пользователя.
+     * @param string $password Пароль в открытом виде (сохраняется только его хеш).
+     * @param string $role Роль пользователя (user или admin).
+     * @return int Идентификатор созданного пользователя.
+     */
     public static function create($username, $email, $password, $role)
     {
         $s = Database::get()->prepare('INSERT INTO users (username, email, password_hash, role) VALUES (?, ?, ?, ?)');
@@ -39,12 +79,25 @@ class User
         return (int)Database::get()->lastInsertId();
     }
 
+    /**
+     * Удаляет пользователя по идентификатору.
+     *
+     * @param int $id Идентификатор пользователя.
+     * @return void
+     */
     public static function delete($id)
     {
         $s = Database::get()->prepare('DELETE FROM users WHERE id = ?');
         $s->execute([$id]);
     }
 
+    /**
+     * Устанавливает новый пароль и удаляет все активные токены восстановления пользователя.
+     *
+     * @param int $id Идентификатор пользователя.
+     * @param string $password Новый пароль в открытом виде.
+     * @return void
+     */
     public static function setPassword($id, $password)
     {
         $pdo = Database::get();
@@ -54,6 +107,12 @@ class User
     }
 
     // Проверка данных формы регистрации. Возвращает массив ошибок [поле => сообщение]
+    /**
+     * Проверяет данные формы регистрации и собирает ошибки по полям.
+     *
+     * @param array $in Данные формы {username, email, password, password2}.
+     * @return array Ошибки в виде [имя поля => сообщение]; пустой массив, если данные корректны.
+     */
     public static function validateNew($in)
     {
         $errors = [];
@@ -84,6 +143,13 @@ class User
         return $errors;
     }
 
+    /**
+     * Проверяет пароль и его повтор по длине и совпадению.
+     *
+     * @param string $password Пароль.
+     * @param string $password2 Повтор пароля.
+     * @return array Ошибки в виде [имя поля => сообщение]; пустой массив, если пароли корректны.
+     */
     public static function validatePassword($password, $password2)
     {
         $errors = [];
@@ -103,6 +169,12 @@ class User
     // ---- Восстановление пароля ----
 
     // Создаёт одноразовый токен. В БД хранится только его хеш.
+    /**
+     * Создаёт одноразовый токен восстановления пароля, сохраняя в базе только его хеш.
+     *
+     * @param int $userId Идентификатор пользователя.
+     * @return string Токен в открытом виде для ссылки восстановления.
+     */
     public static function createResetToken($userId)
     {
         $pdo = Database::get();
@@ -113,6 +185,12 @@ class User
         return $token;
     }
 
+    /**
+     * Находит пользователя по действующему токену восстановления пароля.
+     *
+     * @param string $token Токен в открытом виде из ссылки.
+     * @return array|null Данные пользователя или null, если токен неверен или истёк.
+     */
     public static function findByResetToken($token)
     {
         $s = Database::get()->prepare(

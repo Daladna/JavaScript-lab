@@ -1,15 +1,27 @@
 <?php
 // Подключение к SQLite. При первом запуске создаёт базу и наполняет её демо-данными.
+/**
+ * Отвечает за единое подключение к SQLite и первичную установку демонстрационной базы.
+ */
 class Database
 {
+    /**
+     * @var PDO|null Единственное подключение к базе данных, кешируемое на время запроса.
+     */
     private static $pdo = null;
 
+    /**
+     * Возвращает общее подключение к SQLite, создавая базу и наполняя её при первом запуске.
+     *
+     * @return PDO Активное подключение к базе данных.
+     */
     public static function get()
     {
         if (self::$pdo === null) {
             $path = config('db_path');
             $isNew = !file_exists($path);
 
+            // lower_utf8 нужна SQLite для регистронезависимого поиска по кириллице.
             $lower = function ($s) {
                 return mb_strtolower((string)$s, 'UTF-8');
             };
@@ -34,6 +46,12 @@ class Database
         return self::$pdo;
     }
 
+    /**
+     * Создаёт схему базы и наполняет её демонстрационными пользователями, категориями и мероприятиями.
+     *
+     * @param PDO $pdo Подключение к только что созданной базе данных.
+     * @return void
+     */
     private static function install($pdo)
     {
         $pdo->exec(file_get_contents(__DIR__ . '/../../database/schema.sql'));

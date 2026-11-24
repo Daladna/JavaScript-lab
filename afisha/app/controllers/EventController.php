@@ -1,9 +1,20 @@
 <?php
+/**
+ * Контроллер мероприятий: поиск, список своих мероприятий, создание, редактирование и удаление.
+ */
 class EventController
 {
+    /**
+     * @var int[] Допустимые возрастные ограничения для формы мероприятия.
+     */
     private $ages = [0, 6, 12, 16, 18];
 
     // Публичный поиск мероприятий
+    /**
+     * Показывает результаты публичного поиска мероприятий по фильтрам из GET-запроса.
+     *
+     * @return void
+     */
     public function search()
     {
         $f = [
@@ -22,6 +33,11 @@ class EventController
         ]);
     }
 
+    /**
+     * Показывает мероприятия текущего авторизованного пользователя.
+     *
+     * @return void Гость перенаправляется на страницу входа через Auth::requireLogin().
+     */
     public function myEvents()
     {
         Auth::requireLogin();
@@ -32,6 +48,11 @@ class EventController
         ]);
     }
 
+    /**
+     * Обрабатывает создание мероприятия и показывает форму с ошибками при необходимости.
+     *
+     * @return void При успешном сохранении скрипт завершается через redirect.
+     */
     public function create()
     {
         Auth::requireLogin();
@@ -51,6 +72,11 @@ class EventController
         $this->showForm('Новое мероприятие', 'index.php?page=event_create', 'Создать', $d, $errors);
     }
 
+    /**
+     * Обрабатывает редактирование мероприятия и показывает заполненную форму.
+     *
+     * @return void При успешном сохранении скрипт завершается через redirect.
+     */
     public function edit()
     {
         Auth::requireLogin();
@@ -75,6 +101,11 @@ class EventController
         $this->showForm('Редактирование мероприятия', 'index.php?page=event_edit&id=' . $event['id'], 'Сохранить', $d, $errors);
     }
 
+    /**
+     * Удаляет мероприятие по POST-запросу после проверки прав.
+     *
+     * @return void Скрипт завершается через redirect.
+     */
     public function delete()
     {
         Auth::requireLogin();
@@ -89,6 +120,13 @@ class EventController
     }
 
     // Находит мероприятие и проверяет права: изменять можно только своё (администратор — любое)
+    /**
+     * Находит мероприятие и проверяет, что текущий пользователь вправе его изменять.
+     * При отсутствии мероприятия или нехватке прав завершает запрос ошибкой 404 или 403.
+     *
+     * @param int $id Идентификатор мероприятия.
+     * @return array Данные мероприятия.
+     */
     private function findOwn($id)
     {
         $event = Event::find($id);
@@ -101,6 +139,16 @@ class EventController
         return $event;
     }
 
+    /**
+     * Подготавливает данные и выводит форму создания или редактирования мероприятия.
+     *
+     * @param string $heading Заголовок формы.
+     * @param string $action URL отправки формы.
+     * @param string $submitText Текст кнопки отправки.
+     * @param array $d Данные мероприятия для заполнения полей.
+     * @param array $errors Ошибки валидации в виде [имя поля => сообщение].
+     * @return void
+     */
     private function showForm($heading, $action, $submitText, $d, $errors)
     {
         render('events/form', [
@@ -110,6 +158,12 @@ class EventController
     }
 
     // Серверная проверка формы. Возвращает [данные, ошибки]
+    /**
+     * Проверяет данные формы мероприятия и нормализует их.
+     *
+     * @param array $in Данные POST-запроса {title, description, category_id, event_date, place, format, price, age_limit}.
+     * @return array Массив из двух элементов: [0] — очищенные данные мероприятия, [1] — ошибки по полям.
+     */
     private function validate($in)
     {
         $d = [

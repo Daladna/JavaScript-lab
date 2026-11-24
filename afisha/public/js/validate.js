@@ -4,6 +4,12 @@
 document.querySelectorAll('form.js-validate').forEach(function (form) {
     form.setAttribute('novalidate', 'novalidate');
 
+    /**
+     * Возвращает текст ошибки для поля по его атрибутам и состоянию валидности.
+     *
+     * @param {HTMLInputElement|HTMLSelectElement|HTMLTextAreaElement} f Проверяемое поле формы.
+     * @returns {string} Сообщение об ошибке или пустая строка, если поле корректно.
+     */
     function getMessage(f) {
         var v = f.value.trim();
         if (f.validity.valueMissing) {
@@ -32,6 +38,13 @@ document.querySelectorAll('form.js-validate').forEach(function (form) {
         return '';
     }
 
+    /**
+     * Выводит сообщение об ошибке рядом с полем и переключает его оформление.
+     *
+     * @param {HTMLElement} f Поле формы.
+     * @param {string} msg Текст ошибки; пустая строка убирает ошибку.
+     * @returns {void}
+     */
     function showError(f, msg) {
         var span = form.querySelector('[data-error-for="' + f.name + '"]');
         if (span) span.textContent = msg;
